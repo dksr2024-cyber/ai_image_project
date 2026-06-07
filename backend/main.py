@@ -44,6 +44,10 @@ scheduler.start()
 # ៣. ចាប់ផ្តើម FastAPI App
 app = FastAPI()
 
+@app.get("/")
+async def root():
+    return {"message": "សូមស្វាគមន៍មកកាន់ AI Image Pro API Server!", "status": "Running Smoothly"}
+
 def get_db():
     db = SessionLocal()
     try: yield db
