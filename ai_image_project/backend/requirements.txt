@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+rembg
+Pillow
+python-multipart
+sqlalchemy
+firebase-admin
+apscheduler
+python-dotenv
