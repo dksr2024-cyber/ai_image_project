@@ -54,24 +54,34 @@ def get_db():
     finally: db.close()
 
 # ៤. ដំណើរការ AI (មានភ្ជាប់ Firebase Auth)
+# យើងជំនួសមុខងារចាស់ដោយមុខងារថ្មីនេះ (សម្រាប់ការតេស្ត)
 @app.post("/process/")
 async def process_image(
     action: str = Form(...),
     file: UploadFile = File(...),
-    uid: str = Depends(verify_token), # តម្រូវឲ្យមាន Token ពី App
+    # uid: str = Depends(verify_token), # យើងបិទបន្ទាត់សុវត្ថិភាពនេះសិន
     db = Depends(get_db)
 ):
+    # បង្កើត User ក្លែងក្លាយមួយឈ្មោះ "test_user_123" ហើយឲ្យ ១០០ Credits សម្រាប់តេស្ត
+    uid = "test_user_123"
     user = db.query(User).filter(User.id == uid).first()
-    if not user or user.credits < 10:
+    if not user:
+        user = User(id=uid, credits=100)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+    if user.credits < 10:
         raise HTTPException(status_code=402, detail="អស់ Credits!")
 
+    # ដំណើរការ AI
     img_data = await file.read()
     img = Image.open(io.BytesIO(img_data)).convert("RGBA")
 
     if action == "bg_remove":
         img = remove(img)
     elif action == "upscale_4k":
-        # កន្លែងនេះដាក់ AI Model ពិតប្រាកដរបស់អ្នក
+        # កន្លែងនេះដាក់ AI Model ពិតប្រាកដរបស់អ្នកនៅថ្ងៃក្រោយ
         img = img.resize((3840, int(3840 * img.height / img.width)), Image.LANCZOS)
     
     # កាត់ Credits រួច Save
