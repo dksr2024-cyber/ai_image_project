@@ -11,7 +11,11 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # ចម្លងកូដចូល
-COPY requirements.txt .
+# ដូរពី 
+# COPY requirements.txt .
+# ទៅជា៖
+COPY backend/requirements.txt .
+COPY backend/ .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
