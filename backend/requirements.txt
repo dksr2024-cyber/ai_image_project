@@ -7,3 +7,4 @@ sqlalchemy
 firebase-admin
 apscheduler
 python-dotenv
+onnxruntime
